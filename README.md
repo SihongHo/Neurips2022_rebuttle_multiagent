@@ -20,11 +20,11 @@ Please use these commands to train ma models:
 
 ``nohup python train.py  --save-dir models/s9/ma_s9_e01/    --scenario simple_spread_multi_agent  --exp-name ma_s9_e01 > results/s9/ma_s9_e01.out 2> results/s9/ma_s9_e01.err &``,
 
-``nohup python train.py  --save-dir models/s10/ma_s10_e01/    --scenario simple_spread_multi_agent  --exp-name ma_s10_e01 > results/s10/ma_s10_e01.out 2> results/s10/ma_s10_e01.err &``,
+``nohup python train.py  --save-dir models/s10/ma_s10_e01/    --scenario simple_adversary_multi_agent  --exp-name ma_s10_e01 > results/s10/ma_s10_e01.out 2> results/s10/ma_s10_e01.err &``,
 
-``nohup python train.py  --save-dir models/s11/ma_s11_e01/    --scenario simple_spread_multi_agent  --exp-name ma_s11_e01 > results/s11/ma_s11_e01.out 2> results/s11/ma_s11_e01.err &``,
+``nohup python train.py  --save-dir models/s11/ma_s11_e01/    --scenario simple_push_multi_agent  --exp-name ma_s11_e01 > results/s11/ma_s11_e01.out 2> results/s11/ma_s11_e01.err &``,
 
-``nohup python train.py  --save-dir models/s12/ma_s12_e01/    --scenario simple_spread_multi_agent  --exp-name ma_s12_e01 > results/s12/ma_s12_e01.out 2> results/s12/ma_s12_e01.err &``
+``nohup python train.py  --save-dir models/s12/ma_s12_e01/    --scenario simple_tag_multi_agent  --exp-name ma_s12_e01 > results/s12/ma_s12_e01.out 2> results/s12/ma_s12_e01.err &``
 
 ### M3DDPG
 
@@ -36,11 +36,11 @@ Please use these commands to train ma models:
 
 ``nohup python train.py  --save-dir models/s9/m3_s9_e01/    --scenario simple_spread_multi_agent  --exp-name m3_s9_e01 > results/s9/m3_s9_e01.out 2> results/s9/m3_s9_e01.err &``,
 
-``nohup python train.py  --save-dir models/s10/m3_s10_e01/    --scenario simple_spread_multi_agent  --exp-name m3_s10_e01 > results/s10/m3_s10_e01.out 2> results/s10/m3_s10_e01.err &``,
+``nohup python train.py  --save-dir models/s10/m3_s10_e01/    --scenario simple_adversary_multi_agent  --exp-name m3_s10_e01 > results/s10/m3_s10_e01.out 2> results/s10/m3_s10_e01.err &``,
 
-``nohup python train.py  --save-dir models/s11/m3_s11_e01/    --scenario simple_spread_multi_agent  --exp-name m3_s11_e01 > results/s11/m3_s11_e01.out 2> results/s11/m3_s11_e01.err &``,
+``nohup python train.py  --save-dir models/s11/m3_s11_e01/    --scenario simple_push_multi_agent  --exp-name m3_s11_e01 > results/s11/m3_s11_e01.out 2> results/s11/m3_s11_e01.err &``,
 
- ``nohup python train.py  --save-dir models/s12/m3_s12_e01/    --scenario simple_spread_multi_agent  --exp-name m3_s12_e01 > results/s12/m3_s12_e01.out 2> results/s12/m3_s12_e01.err &``
+ ``nohup python train.py  --save-dir models/s12/m3_s12_e01/    --scenario simple_tag_multi_agent  --exp-name m3_s12_e01 > results/s12/m3_s12_e01.out 2> results/s12/m3_s12_e01.err &``
                    
 
 ### Modified MPE
