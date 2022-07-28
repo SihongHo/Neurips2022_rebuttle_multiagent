@@ -2,7 +2,7 @@
 
 ## Task
 
-1. Run baseline algorithms (MADDPG and M3DDPG) on MPE (with more agents) and get policies. [We first finish this step]
+1. Run baseline algorithms (MADDPG and M3DDPG) on MPE (with more agents) and get policies. [We first finish this step, Songyang will run MADDPG on Miao-exxact, Sanbao will run M3DDPG on FeiML.]
 
 2. Testing policies under the optimal adversaries obtained from RMAAC.
 
