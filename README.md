@@ -14,9 +14,9 @@
 
 resource: https://github.com/SihongHo/Baseline_Project_MADDPG
 
-Feel free to use other resource if it's more convenient
+Feel free to use another resource if it's more convenient
 
-Please use these command to train ma models:
+Please use these commands to train ma models:
 
 ``nohup python train.py  --save-dir models/s9/ma_s9_e01/    --scenario simple_spread_multi_agent  --exp-name ma_s9_e01 > results/s9/ma_s9_e01.out 2> results/s9/ma_s9_e01.err &``,
 
@@ -30,9 +30,9 @@ Please use these command to train ma models:
 
 resource: https://github.com/SihongHo/Baseline_Project_M3DDPG
 
-Feel free to use other resource if it's more convenient
+Feel free to use another resource if it's more convenient
 
-Please use these command to train m3 models:
+Please use these commands to train ma models:
 
 ``nohup python train.py  --save-dir models/s9/m3_s9_e01/    --scenario simple_spread_multi_agent  --exp-name m3_s9_e01 > results/s9/m3_s9_e01.out 2> results/s9/m3_s9_e01.err &``,
 
@@ -45,7 +45,7 @@ Please use these command to train m3 models:
 
 ### Modified MPE
 
-Please reintstall the MEP using the following resource.
+Please reinstall the MEP using the following resource.
 
 resource: https://github.com/SihongHo/multiagent-particle-envs
 
@@ -82,6 +82,6 @@ what have added: 4 scenarios with more agents
 
 ## Github Cooperate Note
 
-1. Please keep the main branch unchanged. Unless I merge some braches into the main branch.
+1. Please keep the main branch unchanged. Unless I merge some branches into the main branch.
 
-2. Create new braches to run each task. For example: branch_ma, brach_m3, etc.
+2. Create new branches to run each task. For example branch_ma, brach_m3, etc.
