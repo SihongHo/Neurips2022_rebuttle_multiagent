@@ -1,0 +1,8 @@
+nohup python train.py  --save-dir models/s9/rm_s9_e01/  --server-name FeiNewML --scenario simple_spread_multi_agent  --exp-name rm_s9_e01 > results/s9/rm_s9_e01.out 2> results/s9/rm_s9_e01.err &
+------------------------sleep------------------------
+nohup python train.py  --save-dir models/s10/rm_s10_e01/  --server-name FeiNewML --scenario simple_adversary_multi_agent  --exp-name rm_s10_e01 > results/s10/rm_s10_e01.out 2> results/s10/rm_s10_e01.err &
+------------------------sleep------------------------
+nohup python train.py  --save-dir models/s11/rm_s11_e01/  --server-name FeiNewML --scenario simple_push_multi_agent  --exp-name rm_s11_e01 > results/s11/rm_s11_e01.out 2> results/s11/rm_s11_e01.err &
+------------------------sleep------------------------
+nohup python train.py  --save-dir models/s12/rm_s12_e01/  --server-name FeiNewML --scenario simple_tag_multi_agent  --exp-name rm_s12_e01 > results/s12/rm_s12_e01.out 2> results/s12/rm_s12_e01.err &
+------------------------sleep------------------------

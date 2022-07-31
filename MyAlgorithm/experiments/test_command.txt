@@ -1,0 +1,7 @@
+python train.py --save-dir models/s9/ma_s9_e01/  --scenario simple_spread_multi_agent  --exp-name ma_s9_e01  --save-rate 5
+
+python train.py --save-dir models/s10/ma_s10_e01/  --scenario simple_adversary_multi_agent  --exp-name ma_s10_e01  --save-rate 5
+
+python train.py --save-dir models/s11/ma_s11_e01/  --scenario simple_push_multi_agent  --exp-name ma_s11_e01  --save-rate 5
+
+python train.py --save-dir models/s12/ma_s12_e01/  --scenario simple_tag_multi_agent  --exp-name ma_s12_e01  --save-rate 5
