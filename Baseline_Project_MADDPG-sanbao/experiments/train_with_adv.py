@@ -34,6 +34,10 @@ def parse_args():
     parser.add_argument("--gamma", type=float, default=0.95, help="discount factor")
     parser.add_argument("--batch-size", type=int, default=1024, help="number of episodes to optimize at the same time")
     parser.add_argument("--num-units", type=int, default=64, help="number of units in the mlp")
+    parser.add_argument("--num-landmark", type=int, default=3, help="number of landmarks")
+    parser.add_argument("--num-agents", type=int, default=3, help="number of good agents")
+    parser.add_argument("--num-advs", type=int, default=3, help="number of bad agents")
+    parser.add_argument("--use-multiversion", action="store_true", default=False)
     # Checkpointing
     parser.add_argument("--exp-name", type=str, default=None, help="name of the experiment")
     parser.add_argument("--save-dir", type=str, default="/tmp/policy/", help="directory in which training state and model should be saved")
@@ -65,7 +69,11 @@ def make_env(scenario_name, arglist, benchmark=False):
     # load scenario from script
     scenario = scenarios.load(scenario_name + ".py").Scenario()
     # create world
-    world = scenario.make_world()
+    if arglist.use_multiversion:
+        print("use multi-agent version")
+        world = scenario.make_world(num_agents = arglist.num_agents, num_adversaries = arglist.num_advs, num_landmarks = arglist.num_landmark)
+    else: 
+        world = scenario.make_world()
     # create multiagent environment
     if benchmark:
         env = MultiAgentEnv(world, scenario.reset_world, scenario.reward, scenario.observation, scenario.benchmark_data)
@@ -114,7 +122,7 @@ def get_adversaries(env, obs_shape_n, arglist):
     for i in range(env.n):
         adversaries.append(adversary(
             "adversary_%d" % i, p_model, q_model, obs_shape_n, env.observation_space, env.observation_space, i, arglist,
-            local_q_func=(arglist.noise_policy=='ddpg'), ADV=True))
+            local_q_func=(arglist.noise_policy=='ddpg')))
     return adversaries
 
 def train(arglist):
