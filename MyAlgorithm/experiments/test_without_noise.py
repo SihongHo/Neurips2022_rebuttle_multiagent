@@ -193,12 +193,6 @@ def train(arglist):
                 episode_rewards[-1] += rew
                 agent_rewards[i][-1] += rew
 
-            # TO-DO
-            for i, adv in enumerate(adversaries):
-                adv.experience(obs_n[i], adv_action_n[i], -rew_n[i], new_obs_n[i], done_n[i], terminal)
-            for i, rew in enumerate(rew_n):
-                adversary_rewards[i][-1] += -rew
-
             if done or terminal:
                 obs_n = env.reset()
                 episode_step = 0
@@ -278,19 +272,7 @@ def train(arglist):
 #     arglist = parse_args()
 #     train(arglist)
 
-from send_email import *
 if __name__ == '__main__':
     arglist = parse_args()
-#     if not os.path.exists(arglist.save_dir):
-#         os.mkdir(arglist.save_dir)
-#     train(arglist)
-    
-    send_begin_email(arglist.exp_name, server_name = arglist.server_name)
-    try:
-        if not os.path.exists(arglist.save_dir):
-            os.mkdir(arglist.save_dir)
-        train(arglist)
-        send_end_email(arglist.exp_name, server_name = arglist.server_name)
-    except Exception as e: 
-        send_error_email(e, arglist.exp_name, server_name = arglist.server_name)
+    train(arglist)
 
