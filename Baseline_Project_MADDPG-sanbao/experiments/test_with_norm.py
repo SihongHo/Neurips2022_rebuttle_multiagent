@@ -4,9 +4,6 @@ import tensorflow as tf
 import time
 import pickle
 import sys
-import os
-import gym
-import re
 
 sys.path.append('../')
 sys.path.append('../../')
@@ -14,7 +11,6 @@ sys.path.append('../../../')
 
 import maddpg.common.tf_util as U
 from maddpg.trainer.maddpg import MADDPGAgentTrainer
-from maddpg.trainer.marl import MARLAgentTrainer
 import tensorflow.contrib.layers as layers
 import os
 
@@ -27,10 +23,8 @@ def parse_args():
     parser.add_argument("--num-adversaries", type=int, default=0, help="number of adversaries")
     parser.add_argument("--good-policy", type=str, default="maddpg", help="policy for good agents")
     parser.add_argument("--adv-policy", type=str, default="maddpg", help="policy of adversaries")
-    parser.add_argument("--noise-policy", type=str, default="maddpg", help="policy of adversaries")
     # Core training parameters
     parser.add_argument("--lr", type=float, default=1e-2, help="learning rate for Adam optimizer")
-    parser.add_argument("--lr-adv", type=float, default=2e-2, help="learning rate for Adversary Adam optimizer")
     parser.add_argument("--gamma", type=float, default=0.95, help="discount factor")
     parser.add_argument("--batch-size", type=int, default=1024, help="number of episodes to optimize at the same time")
     parser.add_argument("--num-units", type=int, default=64, help="number of units in the mlp")
@@ -39,7 +33,6 @@ def parse_args():
     parser.add_argument("--save-dir", type=str, default="/tmp/policy/", help="directory in which training state and model should be saved")
     parser.add_argument("--save-rate", type=int, default=1000, help="save model once every time this many episodes are completed")
     parser.add_argument("--load-dir", type=str, default="", help="directory in which training state and model are loaded")
-    parser.add_argument("--adv-dir", type=str, default="", help="directory in which adversary's model are loaded")
     # Evaluation
     parser.add_argument("--restore", action="store_true", default=False)
     parser.add_argument("--display", action="store_true", default=False)
@@ -87,70 +80,26 @@ def get_trainers(env, num_adversaries, obs_shape_n, arglist):
             local_q_func=(arglist.good_policy=='ddpg')))
     return trainers
 
-# TO-DO
-def mlp_model_adv(input, num_outputs, scope, reuse=False, num_units=64, rnn_cell=None):
-    # This model takes as input an observation and returns values of all actions
-    with tf.variable_scope(scope, reuse=reuse):
-        out = input
-        out = layers.fully_connected(out, num_outputs=num_units, activation_fn=tf.nn.relu)
-        out = layers.fully_connected(out, num_outputs=num_units, activation_fn=tf.nn.relu)
-        out = layers.fully_connected(out, num_outputs=num_outputs, activation_fn=None)
-        return tf.clip_by_value(out, clip_value_min=-0.5, clip_value_max=0.5)
-
-# TO-DO
-def get_noise(adv_action_n):
-    noise = []
-    for i in range(len(adv_action_n)):
-        noise.append(np.random.normal(adv_action_n[i], 1)) 
-    return np.array(noise)
-
-def get_adversaries(env, obs_shape_n, arglist):
-    adversaries = []
-    p_model = mlp_model_adv
-    q_model = mlp_model
-    adversary = MARLAgentTrainer
-    observation_space = [gym.spaces.Discrete(env.observation_space[i].shape[0]) for i in range(env.n)]
-    print(observation_space)
-    for i in range(env.n):
-        adversaries.append(adversary(
-            "adversary_%d" % i, p_model, q_model, obs_shape_n, env.observation_space, env.observation_space, i, arglist,
-            local_q_func=(arglist.noise_policy=='ddpg'), ADV=True))
-    return adversaries
 
 def train(arglist):
     with U.single_threaded_session():
-        #check parameter
-        if arglist.load_dir == "" or arglist.adv_dir == "":
-            print("load_dir or adv_dir is empty!!!")
-            return
-        
         # Create environment
         env = make_env(arglist.scenario, arglist, arglist.benchmark)
         # Create agent trainers
         obs_shape_n = [env.observation_space[i].shape for i in range(env.n)]
         num_adversaries = min(env.n, arglist.num_adversaries)
-        adversaries = get_adversaries(env, obs_shape_n, arglist)
-        print('There is {} adversaries'.format(str(len(adversaries))))
         trainers = get_trainers(env, num_adversaries, obs_shape_n, arglist)
         print('Using good policy {} and adv policy {}'.format(arglist.good_policy, arglist.adv_policy))
-        
+
         # Initialize
         U.initialize()
-        
-        #Load previous results for adversary
-        variables = tf.contrib.framework.get_variables_to_restore()
-        variables_to_restore = [v for v in variables if re.match(r'adversary*', v.name.split('/')[0]) != None]
-        #print(variables_to_restore)
-        saver = tf.train.Saver(variables_to_restore)
-        saver.restore(U.get_session(), arglist.adv_dir)
-        
-        # Load previous results for agent
-        variables_to_restore_nma = []
-        for i in range(env.n):
-            variables_to_restore_nma += tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope=trainers[i].name)
-        #print(variables_to_restore_nma)
-        saver = tf.train.Saver(variables_to_restore_nma)
-        U.load_state(arglist.load_dir, saver)
+
+        # Load previous results, if necessary
+        if arglist.load_dir == "":
+            arglist.load_dir = arglist.save_dir
+        if arglist.display or arglist.restore or arglist.benchmark:
+            print('Loading previous state...')
+            U.load_state(arglist.load_dir)
 
         episode_rewards = [0.0]  # sum of rewards for all agents
         agent_rewards = [[0.0] for _ in range(env.n)]  # individual agent reward
@@ -165,7 +114,7 @@ def train(arglist):
 
         print('Starting iterations...')
         while True:
-            # TO-DO
+            # get action
             disturbed_obs_n = [np.random.normal(0,1)+obs for obs in obs_n]
             action_n = [agent.action(obs) for agent, obs in zip(trainers,disturbed_obs_n)]
             # environment step
@@ -197,8 +146,6 @@ def train(arglist):
             if arglist.benchmark:
                 for i, info in enumerate(info_n):
                     agent_info[-1][i].append(info_n['n'])
-                if train_step%1000 == 0:
-                    print("Run iteration ", train_step)
                 if train_step > arglist.benchmark_iters and (done or terminal):
                     file_name = arglist.benchmark_dir + arglist.exp_name + '.pkl'
                     print('Finished benchmarking, now saving...')
@@ -212,9 +159,7 @@ def train(arglist):
                 time.sleep(0.1)
                 env.render()
                 continue
-            
-            print("Error!!! Here can only execute benchmark test or display!!!")
-            
+
             # update all trainers, if not in display or benchmark mode
             loss = None
             for agent in trainers:
